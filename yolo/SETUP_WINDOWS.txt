@@ -1,0 +1,134 @@
+SafeSightAI+ YOLO Engine — Windows Setup (RTX 4050)
+=====================================================
+
+WHAT YOU'RE INSTALLING
+-------------------------
+A small local web server (main.py) that accepts an uploaded photo, runs
+YOLOv8n on it, and returns detected objects + hazard cards as JSON.
+It uses your RTX 4050's GPU for speed if set up correctly (Step 3 below
+is what makes that happen — skip it and it'll still work, just on CPU,
+which is much slower).
+
+IMPORTANT LIMITATION — READ FIRST
+------------------------------------
+Out of the box, this uses the STOCK YOLOv8n model, which only recognizes
+80 everyday objects (person, car, backpack, chair, etc.) — it does NOT
+know "no helmet" or "exposed rebar", because it was never trained on
+those. It will mostly just detect "person" in your test photos, and the
+"hazards" list will often be empty. That's expected. See the comment
+block at the top of main.py for how to plug in a real construction-PPE
+model later — the code doesn't need to change, only the model file.
+
+
+STEP 1 — Install Python (skip if already installed)
+-------------------------------------------------------
+Download Python 3.11 from https://www.python.org/downloads/
+During install, TICK THE BOX that says "Add Python to PATH" — easy to miss.
+
+Check it worked by opening Command Prompt (search "cmd" in the Start
+menu) and typing:
+    python --version
+You should see something like "Python 3.11.x".
+
+
+STEP 2 — Open a terminal in this folder and create a virtual environment
+-----------------------------------------------------------------------
+A "virtual environment" keeps this project's Python packages separate
+from everything else on your computer.
+
+1. Unzip this folder somewhere, e.g. your Desktop.
+2. Open Command Prompt.
+3. Navigate into the folder (replace the path with wherever you unzipped it):
+       cd C:\Users\YourName\Desktop\yolo-engine
+4. Create the virtual environment:
+       python -m venv venv
+5. Activate it:
+       venv\Scripts\activate
+   You'll know it worked because your terminal line now starts with (venv).
+   You'll need to run this "activate" command again every time you open a
+   new terminal to work on this project.
+
+
+STEP 3 — Install PyTorch WITH GPU (CUDA) support for your RTX 4050
+------------------------------------------------------------------------
+Your RTX 4050 supports CUDA, so install the GPU-enabled version of
+PyTorch FIRST, before anything else — this one command matters most for
+speed:
+
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+(If this specific command ever stops working because PyTorch has moved
+on, get the current one from https://pytorch.org/get-started/locally/ —
+select "Windows", "Pip", "Python", and whichever CUDA version it offers;
+any recent CUDA 12.x build works fine on an RTX 4050.)
+
+Verify the GPU was detected:
+    python -c "import torch; print(torch.cuda.is_available())"
+This should print: True
+(If it prints False, the server will still work — just slower, on CPU.)
+
+
+STEP 4 — Install everything else
+-------------------------------------
+    pip install -r requirements.txt
+
+
+STEP 5 — Run the server
+----------------------------
+    uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+The first time you run this, it will auto-download the yolov8n.pt model
+file (a few MB) — you need internet for this one-time download only.
+
+You should see something like:
+    Loading YOLO model from 'yolov8n.pt' ...
+    Model loaded. Classes this model knows: {0: 'person', 1: 'bicycle', ...}
+    Uvicorn running on http://0.0.0.0:8000
+
+
+STEP 6 — Test it WITHOUT writing any code
+-----------------------------------------------
+Open your browser and go to:
+    http://127.0.0.1:8000/docs
+
+This is an automatic test page FastAPI builds for you. Click on
+"POST /detect" → "Try it out" → choose a photo file → "Execute".
+You'll see the JSON response right there in the browser, including the
+base64 annotated image string, the raw detections, and the ranked
+hazards list.
+
+
+CONNECTING THIS TO YOUR FRONTEND (index.html / your main SafeSightAI+ app)
+----------------------------------------------------------------------------
+From your frontend's JavaScript, send the uploaded photo like this:
+
+    const formData = new FormData();
+    formData.append("file", fileFromInput);   // fileFromInput = a File object
+
+    const response = await fetch("http://127.0.0.1:8000/detect", {
+      method: "POST",
+      body: formData
+    });
+    const result = await response.json();
+
+    // result.annotated_image  → put into: <img src="data:image/jpeg;base64,PASTE_HERE">
+    // result.detections       → raw YOLO output
+    // result.hazards          → ranked hazard cards, ready to show on screen
+
+CORS is already enabled in main.py, so this will work even though your
+frontend and this server are running on different addresses.
+
+
+TROUBLESHOOTING
+-------------------
+- "python is not recognized"        → Python wasn't added to PATH; reinstall
+                                       Python and tick that checkbox.
+- "No module named 'fastapi'" etc.  → You forgot to activate the virtual
+                                       environment (Step 2.5) before installing
+                                       or running.
+- Server starts but /docs won't load → Make sure you used http:// not https://,
+                                       and the port (8000) matches what's in
+                                       the terminal output.
+- torch.cuda.is_available() = False → Update your NVIDIA driver from
+                                       nvidia.com, then reinstall torch with
+                                       the Step 3 command.

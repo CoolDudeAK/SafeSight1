@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeSightAI+ — YOLO Engine</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; color:#1b2430; margin:0; padding:24px; }
+    .wrap { max-width:640px; margin:0 auto; }
+    h1 { color:#1F497D; font-size:20px; }
+    .card { background:#fff; border:1px solid #e1e6ec; border-radius:10px; padding:18px; margin-bottom:16px; }
+    a { color:#E8651A; font-weight:700; }
+    ul { padding-left:18px; font-size:14px; line-height:1.7; }
+    .note { background:#fdf6e9; border:1px solid #f0d9a8; border-radius:8px; padding:12px; font-size:13px; color:#7a5c00; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🦺 YOLO Vision Engine</h1>
+
+    <div class="card">
+      <p>This folder contains the computer-vision detection engine for SafeSightAI+.</p>
+      <ul>
+        <li><strong>main.py</strong> — FastAPI server that runs YOLOv8 detection</li>
+        <li><strong>yolov8n.pt</strong> — Current AI model (stock model, not yet trained on construction hazards)</li>
+        <li><strong>requirements.txt</strong> — Python packages needed</li>
+        <li><strong>SETUP_WINDOWS.txt</strong> — Step-by-step installation guide</li>
+      </ul>
+    </div>
+
+    <div class="card note">
+      <strong>Important:</strong> This engine must be run on your own computer. 
+      It cannot run live on this website. Use the demo video on Google Drive for presentations.
+      <br><br>
+      When you train a custom PPE model later, simply replace <code>yolov8n.pt</code> 
+      with your trained file and update the model name in <code>main.py</code>. 
+      The public GitHub / Vercel link will automatically show the new version.
+    </div>
+
+    <p style="font-size:13px; color:#5b6570;">
+      <a href="../index.html">← Back to main prototype page</a>
+    </p>
+  </div>
+</body>
+</html>

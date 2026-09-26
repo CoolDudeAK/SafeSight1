@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSightAI+ | Muzaffarpur Junction Redevelopment</title>
+<style>
+  :root{
+    --navy:#1F497D;
+    --navy-dark:#163a63;
+    --orange:#E8651A;
+    --orange-dark:#c9540f;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --text:#1b2430;
+    --text-dim:#5b6570;
+    --border:#e1e6ec;
+    --fatal:#3a0d0d;
+    --fatal-bg:#f6dede;
+    --dangerous:#c0242c;
+    --dangerous-bg:#fbe1e2;
+    --high:#e8651a;
+    --high-bg:#fdead9;
+    --medium:#d9a400;
+    --medium-bg:#fdf3d0;
+    --low:#2f8f4e;
+    --low-bg:#e2f3e6;
+    --shadow: 0 1px 3px rgba(20,30,50,.08), 0 1px 2px rgba(20,30,50,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#11161d; --card:#1a2129; --text:#e8ecf1; --text-dim:#9aa6b2; --border:#2a333e;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#11161d; --card:#1a2129; --text:#e8ecf1; --text-dim:#9aa6b2; --border:#2a333e;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Arial, Helvetica, sans-serif;}
+  #app{min-height:100vh;display:flex;flex-direction:column;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  .btn{border:none;border-radius:6px;padding:10px 16px;font-size:14px;font-weight:600;transition:opacity .15s;}
+  .btn:active{opacity:.75;}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-orange{background:var(--orange);color:#fff;}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+  .btn-ghost{background:transparent;color:var(--navy);}
+  .btn-sm{padding:6px 10px;font-size:12.5px;border-radius:5px;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  input,textarea,select{font-family:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);width:100%;}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--navy);outline-offset:1px;}
+  label{font-size:12.5px;font-weight:600;color:var(--text-dim);display:block;margin-bottom:4px;}
+  .field{margin-bottom:12px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);}
+  .container{max-width:1280px;margin:0 auto;padding:0 20px;width:100%;}
+  .topbar{background:var(--navy);color:#fff;padding:12px 0;}
+  .topbar .container{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-badge{width:38px;height:38px;border-radius:9px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+  .brand-text h1{font-size:16px;margin:0;letter-spacing:.3px;}
+  .brand-text p{font-size:10.5px;margin:0;color:#cdd9ea;letter-spacing:.5px;text-transform:uppercase;}
+  .nav-user{display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap;}
+  .role-pill{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+  .tabbar{background:#193f6b;overflow-x:auto;}
+  .tabbar .container{display:flex;gap:4px;padding-top:0;padding-bottom:0;}
+  .tab{padding:12px 16px;font-size:13px;color:#cdd9ea;font-weight:600;white-space:nowrap;border-bottom:3px solid transparent;background:transparent;}
+  .tab.active{color:#fff;border-bottom-color:var(--orange);}
+  main{flex:1;padding:22px 0 60px;}
+  .grid{display:grid;gap:16px;}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
+  @media (max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+  .section-title{font-size:15px;font-weight:800;color:var(--navy);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .pad{padding:18px;}
+  .banner{border-radius:12px;padding:22px;display:flex;align-items:center;gap:16px;color:#fff;}
+  .banner.clear{background:linear-gradient(135deg,#2f8f4e,#276e3d);}
+  .banner.control{background:linear-gradient(135deg,#d9a400,#b58200);}
+  .banner.alert{background:linear-gradient(135deg,#c0242c,#8f171d);}
+  .banner .icon{font-size:38px;}
+  .banner h2{margin:0 0 4px;font-size:22px;letter-spacing:.5px;}
+  .banner p{margin:0;font-size:13.5px;opacity:.92;}
+  .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;}
+  .badge-fatal{background:var(--fatal-bg);color:var(--fatal);}
+  .badge-dangerous{background:var(--dangerous-bg);color:var(--dangerous);}
+  .badge-high{background:var(--high-bg);color:var(--high);}
+  .badge-medium{background:var(--medium-bg);color:#8a6c00;}
+  .badge-low{background:var(--low-bg);color:var(--low);}
+  .badge-status{background:#e8edf3;color:var(--navy);}
+  .badge-status.inprogress{background:#fdf0dd;color:var(--orange-dark);}
+  .badge-status.verified{background:#dfe9fb;color:#25508f;}
+  .badge-status.resolved{background:var(--low-bg);color:var(--low);}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);}
+  th{color:var(--text-dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;font-weight:700;}
+  tr:hover td{background:rgba(31,73,125,.03);}
+  .table-wrap{overflow-x:auto;}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+  .stat .num{font-size:26px;font-weight:800;color:var(--navy);}
+  .stat .lbl{font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .stat.accent .num{color:var(--orange);}
+  .modal-bg{position:fixed;inset:0;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
+  .modal{background:var(--card);border-radius:12px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;}
+  .modal h3{margin-top:0;color:var(--navy);}
+  .close-x{float:right;background:none;border:none;font-size:20px;color:var(--text-dim);cursor:pointer;}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:600;background:var(--card);color:var(--text);}
+  .chip.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .steps-list{list-style:none;padding:0;margin:10px 0;}
+  .steps-list li{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13.5px;border-bottom:1px dashed var(--border);}
+  .steps-list li:last-child{border-bottom:none;}
+  .steps-list input{width:auto;}
+  .steps-list .done{text-decoration:line-through;color:var(--text-dim);}
+  .cam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media (max-width:800px){.cam-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.cam-grid{grid-template-columns:1fr;}}
+  .cam-tile{background:#0d1622;border-radius:8px;overflow:hidden;position:relative;aspect-ratio:4/3;}
+  .cam-tile canvas,.cam-tile video{width:100%;height:100%;object-fit:cover;display:block;}
+  .cam-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:11.5px;padding:14px 8px 6px;font-weight:600;}
+  .cam-live-dot{position:absolute;top:8px;left:8px;background:#c0242c;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;letter-spacing:.5px;}
+  .empty{padding:40px 20px;text-align:center;color:var(--text-dim);}
+  .empty .e-icon{font-size:36px;margin-bottom:8px;}
+  .login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;background:
+    radial-gradient(circle at 20% 20%, rgba(232,101,26,.08), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(31,73,125,.10), transparent 45%), var(--bg);}
+  .login-card{max-width:460px;width:100%;padding:32px;}
+  .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 20px;}
+  .role-btn{padding:16px 10px;border-radius:10px;border:2px solid var(--border);background:var(--card);text-align:center;font-weight:700;font-size:13.5px;color:var(--text);}
+  .role-btn .r-icon{font-size:22px;display:block;margin-bottom:6px;}
+  .role-btn.selected{border-color:var(--navy);background:#eef3fa;color:var(--navy);}
+  .hint{font-size:11.5px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+  .progress-bar{height:8px;background:var(--border);border-radius:6px;overflow:hidden;margin:10px 0;}
+  .progress-bar > div{height:100%;background:var(--orange);transition:width .3s;}
+  .upload-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+  .upload-tab{padding:8px 14px;border-radius:7px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;color:var(--text-dim);}
+  .upload-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .result-card{border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-top:12px;position:relative;}
+  .result-card.fatal{border-color:var(--fatal);}
+  .result-card.dangerous{border-color:var(--dangerous);}
+  .result-card.high{border-color:var(--high);}
+  .result-card.medium{border-color:var(--medium);}
+  .result-card.low{border-color:var(--low);}
+  .sep-bar{display:flex;gap:10px;margin:8px 0;font-size:11.5px;color:var(--text-dim);}
+  .sep-bar b{color:var(--text);}
+  details{margin-top:8px;}
+  details summary{cursor:pointer;font-size:12px;color:var(--navy);font-weight:700;}
+  .footer-note{margin-top:30px;padding:14px 18px;background:#eef3fa;border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.6;}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;font-size:13.5px;box-shadow:var(--shadow);z-index:200;max-width:320px;}
+  .flexrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .spacer{flex:1;}
+  video.preview,img.preview{max-width:100%;border-radius:8px;margin:10px 0;max-height:220px;object-fit:cover;}
+  .search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .search-row input,.search-row select{width:auto;flex:1;min-width:140px;}
+  .kbd-note{font-size:11px;color:var(--text-dim);}
+  ::-webkit-scrollbar{height:8px;width:8px;}
+  ::-webkit-scrollbar-thumb{background:#c3ccd6;border-radius:4px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================== DATA ============================== */
+const SITE_NAME = "Muzaffarpur Junction Redevelopment Project, Bihar";
+const SITE_SHORT = "Muzaffarpur Jn. Redevelopment (Indian Railways)";
+
+const ZONES = ["Platform 1 – North","Platform 2 – South","Foundation Pit – East","Foundation Pit – West",
+  "Scaffolding Bay 3","Cable Trench – Yard","Main Concourse","FOB – Overbridge Site"];
+
+const TIERS = [
+  {id:"Fatal", label:"Fatal", cls:"fatal", desc:"Immediate death/life-threatening risk if unaddressed"},
+  {id:"Dangerous", label:"Dangerous", cls:"dangerous", desc:"Serious injury highly likely — urgent action"},
+  {id:"High", label:"High", cls:"high", desc:"Significant injury possible — prompt action needed"},
+  {id:"Medium", label:"Medium", cls:"medium", desc:"Moderate injury possible — scheduled action"},
+  {id:"Low", label:"Low", cls:"low", desc:"Minor risk — routine housekeeping"}
+];
+const TIER_ORDER = {Fatal:0,Dangerous:1,High:2,Medium:3,Low:4};
+const TIER_SCORE_RANGE = {Fatal:[100,125],Dangerous:[65,99],High:[40,64],Medium:[18,39],Low:[3,17]};
+
+const HAZARD_TYPES = [
+  {id:"slip_trip", label:"Slip & Trip / Debris Fall", icon:"🪵",
+    keywords:["debris","slip","trip","wet","spill","uneven"],
+    baseTier:"Low", escalate:[{to:"Medium",chance:.35,note:"high-footfall walkway"}],
+    solution:["Clear debris immediately","Barricade the area","Assign housekeeping crew","Re-inspect in 24h"]},
+  {id:"exposed_rebar", label:"Exposed Reinforcement", icon:"⚠️",
+    keywords:["rebar","reinforcement","exposed rod","column"],
+    baseTier:"High", escalate:[{to:"Medium",chance:.4,note:"low-traffic area, capped priority lowered"}],
+    solution:["Cap exposed rebar","Barricade the zone","Notify structural engineer"]},
+  {id:"live_wire", label:"Unearthed Live Wire", icon:"⚡",
+    keywords:["wire","cable","electric","frayed","conduit"],
+    baseTier:"Dangerous", escalate:[{to:"Fatal",chance:.4,note:"near standing water/mud — escalated"}],
+    solution:["Isolate power immediately","Cordon off the area","Notify electrical safety officer"]},
+  {id:"ppe_violation", label:"PPE Kit Violation", icon:"🦺",
+    keywords:["helmet","ppe","vest","gloves","boots","no helmet"],
+    baseTier:"Medium", escalate:[],
+    solution:["Issue on-site warning","Provide PPE on the spot","Log worker ID","Flag for retraining"]},
+  {id:"no_harness", label:"No Harness (Work at Height)", icon:"🪢",
+    keywords:["harness","height","edge","fall arrest"],
+    baseTier:"Dangerous", escalate:[],
+    solution:["Halt work at height","Issue harness","Verify anchor point","Supervisor sign-off"]},
+  {id:"scaffolding_risk", label:"Scaffolding Risk", icon:"🏗️",
+    keywords:["scaffold","bracing","pole","platform overload"],
+    baseTier:"High", escalate:[{to:"Dangerous",chance:.35,note:"structural joint/bracing issue"},
+                                {to:"Fatal",chance:.15,note:"severe misalignment + active load — escalated"}],
+    solution:["Stop scaffold use","Engineer inspection","Realign / reinforce","Re-certify before reuse"]}
+];
+function hz(id){ return HAZARD_TYPES.find(h=>h.id===id); }
+
+const DOC_SECTIONS = ["JSA","TPR","Clearances","Licenses","Other"];
+
+const DEMO_USERS = {
+  admin:    {username:"admin",     password:"admin123", name:"R. K. Sinha",  role:"admin"},
+  associate:{username:"associate", password:"site123",  name:"Manoj Yadav",  role:"associate"},
+  member:   {username:"member",    password:"work123",  name:"Suresh Paswan",role:"member"}
+};
+const ROLE_META = {
+  admin:{label:"Head Safety Officer", icon:"🛡️"},
+  associate:{label:"Site Officer", icon:"👷‍♂️"},
+  member:{label:"Workman", icon:"🧰"},
+  visitor:{label:"General Public", icon:"👁️"}
+};
+
+/* ========================== STATE / STORAGE ========================= */
+const STORE_KEY = "ssai_plus_state_v1";
+let state = null;
+
+function seedState(){
+  const now = Date.now();
+  const mk = (offsetHrs)=> new Date(now - offsetHrs*3600*1000).toISOString();
+  const seedHazards = [
+    buildHazard("live_wire", "associate", "Manoj Yadav", "Cable Trench – Yard", mk(2), true, "near standing water/mud — escalated"),
+    buildHazard("scaffolding_risk", "associate", "Manoj Yadav", "Scaffolding Bay 3", mk(5), true, "structural joint/bracing issue"),
+    buildHazard("ppe_violation", "member", "Suresh Paswan", "Platform 1 – North", mk(7)),
+    buildHazard("exposed_rebar", "associate", "Manoj Yadav", "Foundation Pit – East", mk(20)),
+  ];
+  const resolvedHazards = [
+    (()=>{ const h = buildHazard("slip_trip","member","Suresh Paswan","Main Concourse", mk(50));
+      h.assignedSolution = h.solution[0]; h.status="Resolved"; h.resolvedAt = mk(30);
+      h.verifiedBy = "Automated Device Verification";
+      h.resolutionLog = [
+        {solution:h.solution[0], action:"assigned", by:"R. K. Sinha", note:null, ts:mk(48)},
+        {solution:h.solution[0], action:"implemented", by:"Suresh Paswan", note:null, ts:mk(35)},
+        {solution:h.solution[0], action:"verified", by:"Automated Device Verification", note:null, ts:mk(30)}
+      ];
+      return h; })(),
+    (()=>{ const h = buildHazard("no_harness","associate","Manoj Yadav","FOB – Overbridge Site", mk(90));
+      h.assignedSolution = h.solution[0]; h.status="Resolved"; h.resolvedAt = mk(70);
+      h.verifiedBy = "Automated Device Verification";
+      h.resolutionLog = [
+        {solution:h.solution[0], action:"assigned", by:"R. K. Sinha", note:null, ts:mk(85)},
+        {solution:h.solution[0], action:"implemented", by:"Manoj Yadav", note:null, ts:mk(75)},
+        {solution:h.solution[0], action:"verified", by:"Automated Device Verification", note:null, ts:mk(70)}
+      ];
+      return h; })(),
+  ];
+
+  // Example: already Assigned by the admin, awaiting the Site Officer's response
+  seedHazards[0].status = "Assigned";
+  seedHazards[0].assignedSolution = seedHazards[0].solution[0];
+  seedHazards[0].assignedNote = "Crew dispatched, ETA 20 min";
+  seedHazards[0].resolutionLog = [
+    {solution:seedHazards[0].solution[0], action:"assigned", by:"R. K. Sinha", note:"Crew dispatched, ETA 20 min", ts:mk(2)}
+  ];
+
+  // Example: mid-loop — Site Officer declined the first solution, awaiting re-assignment
+  seedHazards[1].status = "Pending Re-assignment";
+  seedHazards[1].declineReason = "Crane required to fully halt scaffold use — not available until tomorrow.";
+  seedHazards[1].resolutionLog = [
+    {solution:seedHazards[1].solution[0], action:"assigned", by:"R. K. Sinha", note:null, ts:mk(6)},
+    {solution:seedHazards[1].solution[0], action:"declined", by:"Manoj Yadav", reason:"Crane required to fully halt scaffold use — not available until tomorrow.", ts:mk(5)}
+  ];
+
+  seedHazards[2].status = "Open";
+
+  // Example: implemented, awaiting the independent device verification check
+  seedHazards[3].status = "Implemented — Pending Device Verification";
+  seedHazards[3].assignedSolution = seedHazards[3].solution[0];
+  seedHazards[3].assignedNote = "Structural engineer confirmed cap fitting Tuesday";
+  seedHazards[3].implementedAt = mk(1);
+  seedHazards[3].implementedBy = "Manoj Yadav";
+  seedHazards[3].resolutionLog = [
+    {solution:seedHazards[3].solution[0], action:"assigned", by:"R. K. Sinha", note:"Structural engineer confirmed cap fitting Tuesday", ts:mk(18)},
+    {solution:seedHazards[3].solution[0], action:"implemented", by:"Manoj Yadav", note:null, ts:mk(1)}
+  ];
+
+  return {
+    currentUser: null,
+    view: "landing",
+    subview: null,
+    hazards: [...seedHazards, ...resolvedHazards],
+    documents: [
+      {id:uid(), section:"JSA", filename:"JSA_Foundation_Pit_East.pdf", uploader:"Manoj Yadav", status:"Verified", reason:"", ts:mk(120)},
+      {id:uid(), section:"TPR", filename:"TPR_Scaffolding_Bay3.pdf", uploader:"Manoj Yadav", status:"Pending Review", reason:"", ts:mk(10)},
+      {id:uid(), section:"Clearances", filename:"Electrical_Clearance_Yard.pdf", uploader:"Manoj Yadav", status:"Rejected", reason:"Signature page missing", ts:mk(200)},
+      {id:uid(), section:"Licenses", filename:"Crane_Operator_License.pdf", uploader:"Manoj Yadav", status:"Pending Review", reason:"", ts:mk(3)},
+    ]
+  };
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ console.warn("state load failed", e); }
+  return seedState();
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  catch(e){ console.warn("state save failed", e); }
+}
+
+/* ============================== HELPERS ============================= */
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function pick(arr){ return arr[randInt(0,arr.length-1)]; }
+function fmtTime(iso){
+  const d = new Date(iso);
+  return d.toLocaleString('en-IN', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+}
+function esc(s){ return (s||"").toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function scoreToSEP(tier){
+  const [lo,hi] = TIER_SCORE_RANGE[tier];
+  for(let i=0;i<60;i++){
+    const s=randInt(1,5), e=randInt(1,5), p=randInt(1,5), sc=s*e*p;
+    if(sc>=lo && sc<=hi) return {s,e,p,score:sc};
+  }
+  const s=randInt(1,5), e=randInt(1,5), p=randInt(1,5);
+  return {s,e,p,score:s*e*p};
+}
+
+function resolveTier(hazardType, forceEscalate){
+  const def = hz(hazardType);
+  let tier = def.baseTier;
+  let note = null;
+  if(forceEscalate && def.escalate.length){
+    const opt = def.escalate[def.escalate.length-1];
+    tier = opt.to; note = opt.note;
+  } else {
+    for(const opt of def.escalate){
+      if(Math.random() < opt.chance){ tier = opt.to; note = opt.note; break; }
+    }
+  }
+  return {tier, note};
+}
+
+function buildHazard(typeId, uploaderRole, uploaderName, zone, ts, forceEscalate, forceNote, confidenceOverride, clipTimestamp){
+  const def = hz(typeId);
+  const {tier, note} = resolveTier(typeId, forceEscalate);
+  const finalNote = forceNote || note;
+  const sep = scoreToSEP(tier);
+  const confidence = confidenceOverride || randInt(note? 88:78, 96);
+  return {
+    id: uid(),
+    type: typeId,
+    label: def.label,
+    icon: def.icon,
+    confidence,
+    tier,
+    tierNote: finalNote,
+    severity: sep.s, exposure: sep.e, probability: sep.p, rawScore: sep.score,
+    zone: zone || pick(ZONES),
+    ts: ts || new Date().toISOString(),
+    uploader: uploaderName,
+    uploaderRole,
+    status: "Open",
+    solution: def.solution.slice(),
+    /* --- resolution-loop fields (Assign → Implement/Decline → Verify → Monitor) --- */
+    assignedSolution: null,   // the one solution the admin has assigned
+    assignedNote: null,       // admin's feasibility/resource note for the current assignment
+    declineReason: null,      // most recent "cannot implement" reason or verification-failure reason, shown to admin
+    monitoringNote: null,     // set when a monitoring sweep re-flags a resolved hazard
+    resolutionLog: [],        // [{solution, action, by, reason/note, ts}] — full audit trail of the loop
+    implementedAt: null,
+    implementedBy: null,
+    clipTimestamp: clipTimestamp || null,
+    resolvedAt: null,
+    verifiedBy: null
+  };
+}
+
+function overallStatus(){
+  const open = state.hazards.filter(h=>h.status!=="Resolved");
+  if(open.some(h=>h.tier==="Fatal" || h.tier==="Dangerous")) return "alert";
+  if(open.length>0) return "control";
+  return "clear";
+}
+function statusMeta(s){
+  return {
+    clear:{label:"CLEAR", icon:"✅", desc:"No active hazards — site operating within normal safety parameters."},
+    control:{label:"UNDER CONTROL", icon:"🟡", desc:"Active hazards identified and currently being managed by site safety teams."},
+    alert:{label:"ALERT", icon:"🚨", desc:"Unresolved high-risk hazard on site — immediate safety action in progress."}
+  }[s];
+}
+
+function toast(msg){
+  const t = document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2600);
+}
+
+/* Mock AI detection engine */
+function detectFromHint(hint){
+  const text = (hint||"").toLowerCase();
+  const matches = HAZARD_TYPES.filter(h=>h.keywords.some(k=>text.includes(k)));
+  if(matches.length) return matches.map(m=>m.id);
+  // weighted random fallback — PPE & slip/trip most common on real sites
+  const weights = [["slip_trip",3],["ppe_violation",3],["exposed_rebar",2],["scaffolding_risk",2],["no_harness",1],["live_wire",1]];
+  const bag = [];
+  weights.forEach(([id,w])=>{ for(let i=0;i<w;i++) bag.push(id); });
+  return [pick(bag)];
+}
+
+/* ============================== ROUTER / RENDER ====================== */
+const root = document.getElementById('app');
+function render(){ saveState(); root.innerHTML = ""; root.appendChild(buildView()); window.scrollTo(0,0); }
+
+function buildView(){
+  if(!state.currentUser) return renderLogin();
+  const role = state.currentUser.role;
+  if(role==="visitor") return renderVisitor();
+  const wrap = document.createElement('div');
+  wrap.appendChild(renderTopbar());
+  const main = document.createElement('main');
+  main.appendChild(el('div','container'));
+  const inner = document.createElement('div'); inner.className='container';
+  if(role==="admin") inner.appendChild(renderAdmin());
+  if(role==="associate") inner.appendChild(renderAssociate());
+  if(role==="member") inner.appendChild(renderMember());
+  main.innerHTML=""; main.appendChild(inner);
+  wrap.appendChild(main);
+  return wrap;
+}
+
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+
+/* ---------- LOGIN ---------- */
+let loginSelectedRole = null;
+function renderLogin(){
+  const wrap = el('div','login-wrap');
+  const card = el('div','card login-card');
+  card.innerHTML = `
+    <div style="text-align:center;margin-bottom:10px;">
+      <div class="brand-badge" style="margin:0 auto 10px;">🦺</div>
+      <h1 style="margin:0;color:var(--navy);font-size:22px;">SafeSightAI<span style="color:var(--orange);">+</span></h1>
+      <p style="margin:4px 0 0;font-size:12px;color:var(--text-dim);letter-spacing:.5px;">PREDICT. DETECT. PROTECT.</p>
+      <p style="margin:10px 0 0;font-size:12px;color:var(--text-dim);">${esc(SITE_SHORT)}</p>
+    </div>
+    <div class="role-grid" id="roleGrid"></div>
+    <div id="loginFormArea"></div>
+    <div class="hint">Demo credentials — Admin: <b>admin / admin123</b> · Site Officer: <b>associate / site123</b> · Workman: <b>member / work123</b>. Any non-empty entry is accepted.</div>
+  `;
+  const roleGrid = card.querySelector('#roleGrid');
+  const roles = [
+    {id:"admin", icon:"🛡️", label:"Admin", sub:"Head Safety Officer"},
+    {id:"associate", icon:"👷‍♂️", label:"Associate", sub:"Site Officer"},
+    {id:"member", icon:"🧰", label:"Member", sub:"Workman"},
+    {id:"visitor", icon:"👁️", label:"Visitor", sub:"General Public"},
+  ];
+  roles.forEach(r=>{
+    const b = el('button','role-btn'+(loginSelectedRole===r.id?' selected':''),
+      `<span class="r-icon">${r.icon}</span>${r.label}<div style="font-weight:400;font-size:11px;color:var(--text-dim);margin-top:2px;">${r.sub}</div>`);
+    b.onclick = ()=>{ loginSelectedRole = r.id; renderLoginForm(card.querySelector('#loginFormArea')); refreshRoleGrid(roleGrid); };
+    roleGrid.appendChild(b);
+  });
+  function refreshRoleGrid(container){
+    [...container.children].forEach((c,i)=> c.classList.toggle('selected', roles[i].id===loginSelectedRole));
+  }
+  renderLoginForm(card.querySelector('#loginFormArea'));
+  wrap.appendChild(card);
+  return wrap;
+}
+function renderLoginForm(container){
+  if(!loginSelectedRole){ container.innerHTML = `<p style="text-align:center;color:var(--text-dim);font-size:13px;margin:18px 0;">Select a role to continue.</p>`; return; }
+  if(loginSelectedRole==="visitor"){
+    container.innerHTML = `<button class="btn btn-orange" style="width:100%;margin-top:6px;" id="guestBtn">Continue as Guest →</button>`;
+    container.querySelector('#guestBtn').onclick = ()=>{
+      state.currentUser = {role:"visitor", name:"Guest"};
+      render();
+    };
+    return;
+  }
+  container.innerHTML = `
+    <div class="field"><label>Username</label><input id="loginUser" placeholder="e.g. ${DEMO_USERS[loginSelectedRole].username}"></div>
+    <div class="field"><label>Password</label><input id="loginPass" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary" style="width:100%;" id="loginBtn">Login as ${ROLE_META[loginSelectedRole].label} →</button>
+  `;
+  container.querySelector('#loginBtn').onclick = ()=>{
+    const u = container.querySelector('#loginUser').value.trim();
+    const p = container.querySelector('#loginPass').value.trim();
+    if(!u || !p){ toast("Enter a username and password (demo — any value works)."); return; }
+    const demo = DEMO_USERS[loginSelectedRole];
+    state.currentUser = { role: loginSelectedRole, name: (u.toLowerCase()===demo.username? demo.name : u) };
+    render();
+  };
+}
+
+/* ---------- TOPBAR ---------- */
+function renderTopbar(){
+  const top = el('div','topbar');
+  const role = state.currentUser.role;
+  top.innerHTML = `
+    <div class="container">
+      <div class="brand">
+        <div class="brand-badge">🦺</div>
+        <div class="brand-text">
+          <h1>SafeSightAI+</h1>
+          <p>Predict · Detect · Protect</p>
+        </div>
+      </div>
+      <div class="nav-user">
+        <span>${esc(state.currentUser.name)}</span>
+        <span class="role-pill">${ROLE_META[role].icon} ${ROLE_META[role].label}</span>
+        <button class="btn btn-outline btn-sm" id="aboutBtn" style="color:#fff;border-color:rgba(255,255,255,.4);">ℹ About</button>
+        <button class="btn btn-orange btn-sm" id="logoutBtn">Logout</button>
+      </div>
+    </div>`;
+  top.querySelector('#logoutBtn').onclick = ()=>{ state.currentUser=null; state.subview=null; render(); };
+  top.querySelector('#aboutBtn').onclick = showAboutModal;
+  const tabbar = renderTabbar(role);
+  const outer = el('div'); outer.appendChild(top); if(tabbar) outer.appendChild(tabbar);
+  return outer;
+}
+function renderTabbar(role){
+  const tabs = {
+    admin:[["queue","Hazard Queue"],["history","Resolved History"],["logs","Officer Logs"],["cams","Camera Grid"],["docs","Documents"],["upload","Upload"]],
+    associate:[["upload","Upload Hazard"],["myhazards","My Hazards"],["docs","Documents"],["actions","Assigned Actions"]],
+    member:[["report","Report Hazard"],["status","Site Status"]]
+  }[role];
+  if(!tabs) return null;
+  if(!state.subview || !tabs.some(t=>t[0]===state.subview)) state.subview = tabs[0][0];
+  const bar = el('div','tabbar');
+  const c = el('div','container');
+  tabs.forEach(([id,label])=>{
+    const b = el('button','tab'+(state.subview===id?' active':''), esc(label));
+    b.onclick = ()=>{ state.subview=id; render(); };
+    c.appendChild(b);
+  });
+  bar.appendChild(c);
+  return bar;
+}
+
+/* ---------- ABOUT MODAL (evidence base, references) ---------- */
+function showAboutModal(){
+  const bg = el('div','modal-bg');
+  bg.innerHTML = `<div class="modal">
+    <button class="close-x">×</button>
+    <h3>About SafeSightAI+</h3>
+    <p style="font-size:13.5px;color:var(--text-dim);">An AI-driven construction-site safety intelligence system combining computer-vision hazard detection with human hazard reporting and a closed human-in-the-loop verification cycle. Site: <b>${esc(SITE_NAME)}</b>.</p>
+    <p style="font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:4px;">Reference / research context</p>
+    <ul style="font-size:12.5px;color:var(--text-dim);line-height:1.7;">
+      <li>929 recorded construction accidents / 356 fatal, Delhi (2016–18) — cited construction-safety research</li>
+      <li>126 fatal falls-from-height recorded, 2019–Mar 2025 — cited construction-safety research</li>
+      <li>Regulatory grounding referenced: ILO 2022 Code of Practice on OSH in Construction; OSHA 1926 (PPE subpart)</li>
+    </ul>
+    <p style="font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:4px;">What makes this approach different</p>
+    <p style="font-size:12.5px;color:var(--text-dim);">Not detection alone — a human-in-the-loop, multi-step verification &amp; closed resolution loop (Detect → Risk-score → Route → Assign → Implement/Decline → Verify (independent) → Close → Monitor), tuned to Indian site conditions.</p>
+    <div class="footer-note" style="margin-top:14px;">This is a demo prototype. Hazard detection, camera feeds (except one live tile) and sensor data are <b>simulated</b> for demonstration — no live CV model or production backend is connected.</div>
+  </div>`;
+  bg.querySelector('.close-x').onclick = ()=>bg.remove();
+  bg.onclick = (e)=>{ if(e.target===bg) bg.remove(); };
+  document.body.appendChild(bg);
+}
+
+/* ---------- LANDING BANNER (shared) ---------- */
+function bannerEl(){
+  const s = overallStatus();
+  const m = statusMeta(s);
+  const b = el('div', 'banner '+s);
+  b.innerHTML = `<div class="icon">${m.icon}</div><div><h2>SITE STATUS: ${m.label}</h2><p>${m.desc}</p></div>`;
+  return b;
+}
+
+/* ---------- VISITOR VIEW ---------- */
+function renderVisitor(){
+  const wrap = el('div');
+  const top = el('div','topbar');
+  top.innerHTML = `<div class="container">
+    <div class="brand"><div class="brand-badge">🦺</div><div class="brand-text"><h1>SafeSightAI+</h1><p>Predict · Detect · Protect</p></div></div>
+    <div class="nav-user"><span class="role-pill">👁️ Visitor</span><button class="btn btn-orange btn-sm" id="exitBtn">Exit</button></div>
+  </div>`;
+  top.querySelector('#exitBtn').onclick = ()=>{ state.currentUser=null; render(); };
+  wrap.appendChild(top);
+  const main = el('main'); const inner = el('div','container');
+  inner.appendChild(bannerEl());
+  const info = el('div','card pad', `
+    <p style="font-size:14px;line-height:1.7;margin:0;">
+      <b>${esc(SITE_NAME)}</b> is monitored by <b>SafeSightAI+</b>, an AI-assisted construction safety intelligence system.
+      This public view shows only the overall site safety status — detailed hazard data is restricted to authorized site personnel.
+    </p>`);
+  info.style.marginTop = "18px";
+  inner.appendChild(info);
+  main.appendChild(inner);
+  wrap.appendChild(main);
+  return wrap;
+}
+
+/* ============================ ADMIN VIEW ============================= */
+function renderAdmin(){
+  const wrap = el('div');
+  switch(state.subview){
+    case "queue": wrap.appendChild(renderHazardQueue()); break;
+    case "history": wrap.appendChild(renderResolvedHistory()); break;
+    case "logs": wrap.appendChild(renderOfficerLogs()); break;
+    case "cams": wrap.appendChild(renderCameraGrid()); break;
+    case "docs": wrap.appendChild(renderDocPanel(true)); break;
+    case "upload": wrap.appendChild(renderUploadPanel("admin")); break;
+    default: wrap.appendChild(renderHazardQueue());
+  }
+  return wrap;
+}
+
+function statPanel(){
+  const open = state.hazards.filter(h=>h.status!=="Resolved");
+  const fatalCount = open.filter(h=>h.tier==="Fatal").length;
+  const dangerCount = open.filter(h=>h.tier==="Dangerous").length;
+  const resolvedCount = state.hazards.filter(h=>h.status==="Resolved").length;
+  const g = el('div','grid grid-4');
+  g.innerHTML = `
+    <div class="stat"><div class="num">${open.length}</div><div class="lbl">Active Hazards</div></div>
+    <div class="stat accent"><div class="num">${fatalCount+dangerCount}</div><div class="lbl">Fatal + Dangerous</div></div>
+    <div class="stat"><div class="num">${resolvedCount}</div><div class="lbl">Resolved (all-time)</div></div>
+    <div class="stat"><div class="num">${state.documents.filter(d=>d.status==='Pending Review').length}</div><div class="lbl">Docs Pending Review</div></div>
+  `;
+  g.style.marginBottom = "18px";
+  return g;
+}
+
+function tierBadge(tier, note){
+  const t = TIERS.find(x=>x.id===tier);
+  return `<span class="badge badge-${t.cls}" title="${esc(note||t.desc)}">${t.label}</span>`;
+}
+function statusBadge(status){
+  const map = {
+    "Open":"",
+    "Assigned":"inprogress",
+    "Pending Re-assignment":"inprogress",
+    "Implemented — Pending Device Verification":"verified",
+    "Verification Failed — Re-inspect":"inprogress",
+    "Solution Removed / Re-check Needed":"inprogress",
+    "Resolved":"resolved"
+  };
+  return `<span class="badge badge-status ${map[status]||''}">${status}</span>`;
+}
+/* Statuses where the hazard needs a (re-)assignment from the admin — i.e. "back at step 1" */
+const ASSIGNABLE_STATUSES = ["Open","Pending Re-assignment","Verification Failed — Re-inspect","Solution Removed / Re-check Needed"];
+
+function renderHazardQueue(){
+  const box = el('div');
+  box.appendChild(bannerEl());
+  const spacer = el('div'); spacer.style.height="18px"; box.appendChild(spacer);
+  box.appendChild(statPanel());
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','🧭 Hazard Queue — Ranked by Severity'));
+  const open = state.hazards.filter(h=>h.status!=="Resolved")
+    .sort((a,b)=> TIER_ORDER[a.tier]-TIER_ORDER[b.tier] || new Date(b.ts)-new Date(a.ts));
+  if(open.length===0){ card.appendChild(el('div','empty', `<div class="e-icon">✅</div>No active hazards in queue.`)); box.appendChild(card); return box; }
+  const tw = el('div','table-wrap');
+  tw.innerHTML = `<table><thead><tr><th>Tier</th><th>Type</th><th>Location</th><th>Uploader</th><th>Confidence</th><th>Status</th><th>Reported</th><th></th></tr></thead><tbody>
+    ${open.map(h=>`<tr>
+      <td>${tierBadge(h.tier,h.tierNote)}</td>
+      <td>${h.icon} ${esc(h.label)}</td>
+      <td>${esc(h.zone)}</td>
+      <td>${esc(h.uploader)}</td>
+      <td>${h.confidence}%</td>
+      <td>${statusBadge(h.status)}</td>
+      <td>${fmtTime(h.ts)}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openHazardDetail('${h.id}')">View →</button></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+  card.appendChild(tw);
+  box.appendChild(card);
+  return box;
+}
+
+function renderResolvedHistory(){
+  const box = el('div');
+  const card = el('div','card pad');
+  const titleRow = el('div','flexrow');
+  titleRow.appendChild(el('div','section-title','📁 Resolved Hazard History'));
+  const sweepBtn = el('button','btn btn-outline btn-sm','🔍 Run Monitoring Sweep');
+  sweepBtn.style.marginLeft='auto';
+  sweepBtn.onclick = runMonitoringSweep;
+  titleRow.appendChild(el('span','spacer'));
+  titleRow.appendChild(sweepBtn);
+  card.appendChild(titleRow);
+  card.appendChild(el('p','', `<span style="font-size:11.5px;color:var(--text-dim);">Simulates a periodic post-resolution check. Flagged hazards reopen at Assign, with a note that the solution is no longer detected.</span>`));
+  const row = el('div','search-row');
+  row.innerHTML = `<input id="histSearch" placeholder="Search by type, zone, uploader...">
+    <select id="histTier"><option value="">All tiers</option>${TIERS.map(t=>`<option value="${t.id}">${t.label}</option>`).join('')}</select>`;
+  card.appendChild(row);
+  const listWrap = el('div');
+  card.appendChild(listWrap);
+  function draw(){
+    const q = (row.querySelector('#histSearch').value||"").toLowerCase();
+    const tf = row.querySelector('#histTier').value;
+    let items = state.hazards.filter(h=>h.status==="Resolved");
+    if(tf) items = items.filter(h=>h.tier===tf);
+    if(q) items = items.filter(h=> (h.label+h.zone+h.uploader).toLowerCase().includes(q));
+    items.sort((a,b)=> new Date(b.resolvedAt||b.ts) - new Date(a.resolvedAt||a.ts));
+    listWrap.innerHTML="";
+    if(items.length===0){ listWrap.appendChild(el('div','empty',`<div class="e-icon">🗂️</div>No resolved hazards match.`)); return; }
+    const tw = el('div','table-wrap');
+    tw.innerHTML = `<table><thead><tr><th>Tier (at close)</th><th>Type</th><th>Location</th><th>Uploader</th><th>Reported</th><th>Resolved</th></tr></thead><tbody>
+      ${items.map(h=>`<tr><td>${tierBadge(h.tier,h.tierNote)}</td><td>${h.icon} ${esc(h.label)}</td><td>${esc(h.zone)}</td><td>${esc(h.uploader)}</td><td>${fmtTime(h.ts)}</td><td>${h.resolvedAt?fmtTime(h.resolvedAt):'—'}</td></tr>`).join('')}
+    </tbody></table>`;
+    listWrap.appendChild(tw);
+  }
+  row.querySelector('#histSearch').oninput = draw;
+  row.querySelector('#histTier').onchange = draw;
+  draw();
+  box.appendChild(card);
+  return box;
+}
+
+function renderOfficerLogs(){
+  const box = el('div');
+  const uploaders = [...new Set(state.hazards.map(h=>h.uploader))];
+  uploaders.forEach(name=>{
+    const items = state.hazards.filter(h=>h.uploader===name).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    const card = el('div','card pad');
+    card.style.marginBottom = "16px";
+    card.appendChild(el('div','section-title', `👤 ${esc(name)} — ${items.length} upload(s)`));
+    const tw = el('div','table-wrap');
+    tw.innerHTML = `<table><thead><tr><th>Tier</th><th>Type</th><th>Location</th><th>Status</th><th>Timestamp</th></tr></thead><tbody>
+      ${items.map(h=>`<tr><td>${tierBadge(h.tier,h.tierNote)}</td><td>${h.icon} ${esc(h.label)}</td><td>${esc(h.zone)}</td><td>${statusBadge(h.status)}</td><td>${fmtTime(h.ts)}</td></tr>`).join('')}
+    </tbody></table>`;
+    card.appendChild(tw);
+    box.appendChild(card);
+  });
+  return box;
+}
+
+function renderCameraGrid(){
+  const box = el('div');
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','📷 Surveillance Camera Grid'));
+  card.appendChild(el('p','', `<span style="font-size:12.5px;color:var(--text-dim);">Tiles show simulated feeds labeled by zone. One tile can activate your device camera for a live demo.</span>`));
+  const grid = el('div','cam-grid');
+  const camZones = ZONES.slice(0,6);
+  camZones.forEach((z,i)=>{
+    const tile = el('div','cam-tile');
+    const canvas = document.createElement('canvas'); canvas.width=320; canvas.height=240;
+    tile.appendChild(canvas);
+    const lbl = el('div','cam-label', esc(z));
+    tile.appendChild(lbl);
+    if(i===0){
+      const liveBtn = el('button','btn btn-orange btn-sm', '🔴 Go Live');
+      liveBtn.style.position='absolute'; liveBtn.style.top='8px'; liveBtn.style.right='8px'; liveBtn.style.zIndex='5';
+      liveBtn.onclick = ()=> activateLiveCam(tile, liveBtn);
+      tile.appendChild(liveBtn);
+    }
+    grid.appendChild(tile);
+    animateFeed(canvas, z, i);
+  });
+  card.appendChild(grid);
+  box.appendChild(card);
+  return box;
+}
+function animateFeed(canvas, label, seed){
+  const ctx = canvas.getContext('2d');
+  let t=0;
+  function draw(){
+    if(!document.body.contains(canvas)) return;
+    t+=1;
+    ctx.fillStyle = `hsl(${(210+seed*20)%360},25%,${12+Math.sin(t/40+seed)*4}%)`;
+    ctx.fillRect(0,0,320,240);
+    ctx.strokeStyle='rgba(255,255,255,.08)';
+    for(let i=0;i<6;i++){ ctx.beginPath(); ctx.moveTo(0,i*40); ctx.lineTo(320,i*40+Math.sin(t/30+i)*6); ctx.stroke(); }
+    ctx.fillStyle='rgba(255,255,255,.55)';
+    ctx.font='10px monospace';
+    ctx.fillText(new Date().toLocaleTimeString(), 8, 232);
+    ctx.fillStyle = seed%2===0 ? 'rgba(232,101,26,.5)' : 'rgba(80,150,255,.4)';
+    const bx = 60+Math.sin(t/50+seed)*80, by=120+Math.cos(t/60+seed)*60;
+    ctx.fillRect(bx,by,26,50);
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+async function activateLiveCam(tile, btn){
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:true});
+    tile.querySelector('canvas')?.remove();
+    const video = document.createElement('video');
+    video.autoplay=true; video.muted=true; video.playsInline=true;
+    video.srcObject = stream;
+    tile.insertBefore(video, tile.firstChild);
+    const dot = el('div','cam-live-dot','● LIVE');
+    tile.appendChild(dot);
+    btn.remove();
+  }catch(e){
+    toast("Camera permission denied or unavailable in this browser.");
+  }
+}
+
+function renderDocPanel(isAdmin){
+  const box = el('div');
+  if(isAdmin){
+    const card = el('div','card pad');
+    card.appendChild(el('div','section-title','📄 Document Verification — Master Table'));
+    const row = el('div','search-row');
+    row.innerHTML = `<select id="secFilter"><option value="">All sections</option>${DOC_SECTIONS.map(s=>`<option>${s}</option>`).join('')}</select>
+      <select id="statFilter"><option value="">All statuses</option><option>Pending Review</option><option>Verified</option><option>Rejected</option></select>`;
+    card.appendChild(row);
+    const listWrap = el('div'); card.appendChild(listWrap);
+    function draw(){
+      const sf = row.querySelector('#secFilter').value, tf = row.querySelector('#statFilter').value;
+      let docs = state.documents.slice();
+      if(sf) docs = docs.filter(d=>d.section===sf);
+      if(tf) docs = docs.filter(d=>d.status===tf);
+      docs.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+      listWrap.innerHTML="";
+      if(!docs.length){ listWrap.appendChild(el('div','empty','No documents match.')); return; }
+      const tw = el('div','table-wrap');
+      tw.innerHTML = `<table><thead><tr><th>Section</th><th>File</th><th>Uploader</th><th>Status</th><th>Uploaded</th><th></th></tr></thead><tbody>
+        ${docs.map(d=>`<tr>
+          <td>${esc(d.section)}</td><td>${esc(d.filename)}</td><td>${esc(d.uploader)}</td>
+          <td>${docStatusBadge(d.status)}${d.status==='Rejected'&&d.reason?`<div style="font-size:11px;color:var(--text-dim);">${esc(d.reason)}</div>`:''}</td>
+          <td>${fmtTime(d.ts)}</td>
+          <td>${d.status==='Pending Review'?`<button class="btn btn-primary btn-sm" onclick="reviewDoc('${d.id}','Verified')">Verify</button> <button class="btn btn-outline btn-sm" onclick="reviewDoc('${d.id}','Rejected')">Reject</button>`:'—'}</td>
+        </tr>`).join('')}
+      </tbody></table>`;
+      listWrap.appendChild(tw);
+    }
+    row.querySelector('#secFilter').onchange = draw;
+    row.querySelector('#statFilter').onchange = draw;
+    draw();
+    box.appendChild(card);
+  } else {
+    // Associate: upload + check status
+    const uploadCard = el('div','card pad');
+    uploadCard.style.marginBottom = "16px";
+    uploadCard.appendChild(el('div','section-title','📤 Upload Document'));
+    uploadCard.innerHTML += `
+      <div class="field"><label>Section</label><select id="docSection">${DOC_SECTIONS.map(s=>`<option>${s}</option>`).join('')}</select></div>
+      <div class="field"><label>File</label><input type="file" id="docFile"></div>
+      <button class="btn btn-primary" id="docUploadBtn">Submit Document</button>`;
+    uploadCard.querySelector('#docUploadBtn').onclick = ()=>{
+      const sec = uploadCard.querySelector('#docSection').value;
+      const file = uploadCard.querySelector('#docFile').files[0];
+      if(!file){ toast("Choose a file first."); return; }
+      state.documents.push({id:uid(), section:sec, filename:file.name, uploader:state.currentUser.name, status:"Pending Review", reason:"", ts:new Date().toISOString()});
+      toast("Document submitted for review.");
+      render();
+    };
+    box.appendChild(uploadCard);
+
+    const statusCard = el('div','card pad');
+    statusCard.appendChild(el('div','section-title','📋 My Document Status'));
+    const mine = state.documents.filter(d=>d.uploader===state.currentUser.name).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    if(!mine.length){ statusCard.appendChild(el('div','empty','No documents submitted yet.')); }
+    else{
+      const tw = el('div','table-wrap');
+      tw.innerHTML = `<table><thead><tr><th>Section</th><th>File</th><th>Status</th><th>Uploaded</th></tr></thead><tbody>
+        ${mine.map(d=>`<tr><td>${esc(d.section)}</td><td>${esc(d.filename)}</td><td>${docStatusBadge(d.status)}${d.status==='Rejected'&&d.reason?`<div style="font-size:11px;color:var(--text-dim);">${esc(d.reason)}</div>`:''}</td><td>${fmtTime(d.ts)}</td></tr>`).join('')}
+      </tbody></table>`;
+      statusCard.appendChild(tw);
+    }
+    box.appendChild(statusCard);
+  }
+  return box;
+}
+function docStatusBadge(s){
+  const map = {"Pending Review":"", "Verified":"resolved", "Rejected":"inprogress"};
+  return `<span class="badge badge-status ${map[s]}">${s}</span>`;
+}
+window.reviewDoc = function(id, status){
+  const d = state.documents.find(x=>x.id===id);
+  if(!d) return;
+  if(status==="Rejected"){
+    const reason = prompt("Reason for rejection:", "Please resubmit with correct details");
+    d.reason = reason || "Not specified";
+  }
+  d.status = status;
+  toast(`Document marked ${status}.`);
+  render();
+};
+
+/* ---------- Independent device verification (simulated, weighted random, same pattern as the mock AI engine) ---------- */
+function runDeviceVerification(id){
+  const h = state.hazards.find(x=>x.id===id);
+  if(!h || h.status!=="Implemented — Pending Device Verification") return;
+  const success = Math.random() < 0.78;
+  if(success){
+    h.resolutionLog.push({solution:h.assignedSolution, action:"verified", by:"Automated Device Verification", note:null, ts:new Date().toISOString()});
+    h.verifiedBy = "Automated Device Verification";
+    h.declineReason = null;
+    h.status = "Resolved";
+    h.resolvedAt = new Date().toISOString();
+    toast(`Independent verification passed — "${h.label}" marked Resolved.`);
+  } else {
+    const reason = "Independent device check did not detect the fix (simulated mismatch).";
+    h.resolutionLog.push({solution:h.assignedSolution, action:"verification_failed", by:"Automated Device Verification", reason, ts:new Date().toISOString()});
+    h.declineReason = reason;
+    h.status = "Verification Failed — Re-inspect";
+    toast(`Independent verification failed for "${h.label}" — re-assignment needed.`);
+  }
+  render();
+}
+
+/* ---------- Continuous monitoring sweep (admin, manual trigger, simulated) ---------- */
+function runMonitoringSweep(){
+  const resolved = state.hazards.filter(h=>h.status==="Resolved");
+  if(!resolved.length){ toast("No resolved hazards to check."); return; }
+  let flagged = 0;
+  resolved.forEach(h=>{
+    if(Math.random() < 0.15){
+      flagged++;
+      const reason = "Previously resolved solution no longer detected.";
+      h.resolutionLog.push({solution:h.assignedSolution, action:"monitoring_flagged", by:"Automated Monitoring Sweep", reason, ts:new Date().toISOString()});
+      h.monitoringNote = reason;
+      h.declineReason = reason;
+      h.assignedSolution = null;
+      h.assignedNote = null;
+      h.status = "Solution Removed / Re-check Needed";
+    }
+  });
+  toast(flagged
+    ? `Monitoring sweep complete — ${flagged} hazard(s) flagged for re-check.`
+    : `Monitoring sweep complete — no issues detected across ${resolved.length} resolved hazard(s).`);
+  render();
+}
+
+/* ---------- Hazard detail modal ---------- */
+window.openHazardDetail = function(id){
+  const h = state.hazards.find(x=>x.id===id);
+  if(!h) return;
+  const bg = el('div','modal-bg');
+  const role = state.currentUser.role;
+
+  function renderAssignForm(){
+    const wrap = el('div'); wrap.style.marginTop='14px';
+    wrap.innerHTML = `
+      <p style="font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:6px;">Select a corrective action to assign</p>
+      <div class="chip-row" id="solChoices">
+        ${h.solution.map((s,i)=>`<button type="button" class="chip" data-i="${i}">${esc(s)}</button>`).join('')}
+      </div>
+      <div class="field"><label>Feasibility / resource note (optional)</label><textarea id="assignNote" rows="2" placeholder="e.g. requires crane, available Thu"></textarea></div>
+      <p id="assignErr" style="font-size:12px;color:var(--dangerous);display:none;">Select a solution to assign.</p>
+      <button class="btn btn-primary btn-sm" id="assignBtn">📌 Assign Solution</button>
+    `;
+    let selected = null;
+    wrap.querySelectorAll('#solChoices .chip').forEach(c=>{
+      c.onclick = ()=>{
+        selected = h.solution[+c.dataset.i];
+        wrap.querySelectorAll('#solChoices .chip').forEach(x=>x.classList.remove('active'));
+        c.classList.add('active');
+        wrap.querySelector('#assignErr').style.display='none';
+      };
+    });
+    wrap.querySelector('#assignBtn').onclick = ()=>{
+      if(!selected){ wrap.querySelector('#assignErr').style.display='block'; return; }
+      const note = wrap.querySelector('#assignNote').value.trim();
+      h.resolutionLog.push({solution:selected, action:"assigned", by:state.currentUser.name, note: note||null, ts:new Date().toISOString()});
+      h.assignedSolution = selected;
+      h.assignedNote = note || null;
+      h.declineReason = null;
+      h.monitoringNote = null;
+      h.status = "Assigned";
+      toast("Solution assigned to Site Officer.");
+      bg.remove(); render(); openHazardDetail(id);
+    };
+    return wrap;
+  }
+
+  function renderAssociateForm(){
+    const wrap = el('div'); wrap.style.marginTop='14px';
+    wrap.innerHTML = `
+      <div class="flexrow" style="margin-bottom:10px;">
+        <button class="btn btn-primary btn-sm" id="implBtn">✅ Implement</button>
+        <button class="btn btn-outline btn-sm" id="cannotBtn">✖ Cannot Implement</button>
+      </div>
+      <div id="cannotArea" style="display:none;">
+        <div class="field"><label>Reason (required)</label><textarea id="cannotReason" rows="2" placeholder="e.g. crane not available until Thursday"></textarea></div>
+        <p id="cannotErr" style="font-size:12px;color:var(--dangerous);display:none;">Please state a reason before submitting.</p>
+        <button class="btn btn-orange btn-sm" id="cannotSubmit">Submit Decline</button>
+      </div>
+    `;
+    wrap.querySelector('#implBtn').onclick = ()=>{
+      h.resolutionLog.push({solution:h.assignedSolution, action:"implemented", by:state.currentUser.name, note:null, ts:new Date().toISOString()});
+      h.implementedAt = new Date().toISOString();
+      h.implementedBy = state.currentUser.name;
+      h.status = "Implemented — Pending Device Verification";
+      toast("Marked implemented. Running independent device verification…");
+      bg.remove(); render();
+      setTimeout(()=> runDeviceVerification(id), 1300);
+    };
+    wrap.querySelector('#cannotBtn').onclick = ()=>{ wrap.querySelector('#cannotArea').style.display='block'; };
+    wrap.querySelector('#cannotSubmit').onclick = ()=>{
+      const reason = wrap.querySelector('#cannotReason').value.trim();
+      if(!reason){ wrap.querySelector('#cannotErr').style.display='block'; return; }
+      h.resolutionLog.push({solution:h.assignedSolution, action:"declined", by:state.currentUser.name, reason, ts:new Date().toISOString()});
+      h.declineReason = reason;
+      h.assignedSolution = null;
+      h.assignedNote = null;
+      h.status = "Pending Re-assignment";
+      toast("Marked cannot implement. Sent back to admin for re-assignment.");
+      bg.remove(); render(); openHazardDetail(id);
+    };
+    return wrap;
+  }
+
+  let noteHtml = '';
+  if(h.declineReason && ASSIGNABLE_STATUSES.includes(h.status)){
+    noteHtml += `<div class="footer-note" style="margin-top:10px;background:var(--fatal-bg);color:var(--fatal);">⚠ ${esc(h.declineReason)}</div>`;
+  }
+  if(h.status==="Assigned"){
+    noteHtml += `<div class="footer-note" style="margin-top:10px;">Assigned solution: <b>${esc(h.assignedSolution)}</b>${h.assignedNote?` — ${esc(h.assignedNote)}`:''}</div>`;
+  }
+  if(h.status==="Implemented — Pending Device Verification"){
+    noteHtml += `<div class="footer-note" style="margin-top:10px;">⏳ Independently verifying implementation of: <b>${esc(h.assignedSolution)}</b>…</div>`;
+  }
+  if(h.status==="Resolved"){
+    noteHtml += `<div class="footer-note" style="margin-top:10px;">✅ Resolved ${h.resolvedAt?fmtTime(h.resolvedAt):''}${h.verifiedBy?` — verified by ${esc(h.verifiedBy)}`:''}.</div>`;
+  }
+
+  const logHtml = (h.resolutionLog && h.resolutionLog.length) ? `
+    <details style="margin-top:12px;"><summary>Resolution log (${h.resolutionLog.length})</summary>
+      <div class="table-wrap" style="margin-top:8px;">
+        <table><thead><tr><th>Action</th><th>Solution</th><th>By</th><th>Note / reason</th><th>When</th></tr></thead><tbody>
+        ${h.resolutionLog.slice().reverse().map(l=>`<tr><td style="text-transform:capitalize;">${esc((l.action||'').replace(/_/g,' '))}</td><td>${esc(l.solution||'—')}</td><td>${esc(l.by||'—')}</td><td>${esc(l.reason||l.note||'—')}</td><td>${fmtTime(l.ts)}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+    </details>` : '';
+
+  bg.innerHTML = `<div class="modal">
+    <button class="close-x">×</button>
+    <h3>${h.icon} ${esc(h.label)}</h3>
+    <p style="font-size:11px;color:var(--text-dim);margin:-6px 0 10px;">Detect → Risk-score → Route → Assign → Implement/Decline → Verify (independent) → Close → Monitor</p>
+    <div style="margin-bottom:10px;">${tierBadge(h.tier,h.tierNote)} ${statusBadge(h.status)} <span class="badge badge-status">${h.confidence}% confidence</span></div>
+    ${h.tierNote? `<p style="font-size:12px;color:var(--text-dim);">AI note: ${esc(h.tierNote)}</p>`:''}
+    ${h.type==='ppe_violation' ? `<p style="font-size:11.5px;color:var(--text-dim);background:#f4f6f9;padding:6px 10px;border-radius:6px;">Audit rule applied: <code>PERSON_DETECTED + NO_HELMET → PPE_VIOLATION</code> (auto-logged)</p>` : ''}
+    <div class="sep-bar"><span>Severity: <b>${h.severity}/5</b></span><span>Exposure: <b>${h.exposure}/5</b></span><span>Probability: <b>${h.probability}/5</b></span></div>
+    <details><summary>How was this scored?</summary><p style="font-size:12px;color:var(--text-dim);">Risk Score = Severity × Exposure × Probability = ${h.severity} × ${h.exposure} × ${h.probability} = <b>${h.rawScore}</b>, bucketed as <b>${h.tier}</b>.</p></details>
+    <p style="font-size:12.5px;margin-top:10px;"><b>Location:</b> ${esc(h.zone)} &nbsp; <b>Reported:</b> ${fmtTime(h.ts)} &nbsp; <b>By:</b> ${esc(h.uploader)}</p>
+    <p style="font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:2px;">Candidate corrective actions</p>
+    <ul class="steps-list">${h.solution.map(s=>`<li>• ${esc(s)}</li>`).join('')}</ul>
+    ${noteHtml}
+    <div id="actionArea"></div>
+    ${logHtml}
+  </div>`;
+
+  const actionArea = bg.querySelector('#actionArea');
+  if(role==="admin" && ASSIGNABLE_STATUSES.includes(h.status)){
+    actionArea.appendChild(renderAssignForm());
+  } else if(role==="associate" && h.status==="Assigned"){
+    actionArea.appendChild(renderAssociateForm());
+  }
+
+  bg.querySelector('.close-x').onclick = ()=>bg.remove();
+  bg.onclick = (e)=>{ if(e.target===bg) bg.remove(); };
+  document.body.appendChild(bg);
+};
+
+/* ============================ UPLOAD PANEL (shared) ============================ */
+let uploadMode = "text";
+let mediaStream = null;
+function renderUploadPanel(role){
+  const box = el('div');
+  box.appendChild(bannerEl());
+  const spacer = el('div'); spacer.style.height="18px"; box.appendChild(spacer);
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','📤 Report / Upload Hazard — Multi-Modal'));
+  const tabs = el('div','upload-tabs');
+  const modes = [["text","📝 Text Note"],["photo","🖼️ Photo"],["video","🎥 Video"],["audio","🎙️ Audio"],["live","📹 Live Camera"]];
+  modes.forEach(([id,label])=>{
+    const t = el('button','upload-tab'+(uploadMode===id?' active':''), esc(label));
+    t.onclick = ()=>{ uploadMode=id; stopMediaStream(); drawForm(); };
+    tabs.appendChild(t);
+  });
+  card.appendChild(tabs);
+  const formArea = el('div'); card.appendChild(formArea);
+  const resultArea = el('div'); card.appendChild(resultArea);
+
+  function zoneSelectHtml(idAttr){
+    return `<select id="${idAttr}">${ZONES.map(z=>`<option>${z}</option>`).join('')}</select>`;
+  }
+
+  function drawForm(){
+    [...tabs.children].forEach((t,i)=>t.classList.toggle('active', modes[i][0]===uploadMode));
+    resultArea.innerHTML = "";
+    if(uploadMode==="text"){
+      formArea.innerHTML = `
+        <div class="field"><label>Zone / Location</label>${zoneSelectHtml('txtZone')}</div>
+        <div class="field"><label>Describe what you observed</label><textarea id="txtNote" rows="3" placeholder="e.g. exposed rebar near platform edge, no safety cap..."></textarea></div>
+        <button class="btn btn-primary" id="submitText">Submit &amp; Analyze</button>`;
+      formArea.querySelector('#submitText').onclick = ()=>{
+        const note = formArea.querySelector('#txtNote').value.trim();
+        const zone = formArea.querySelector('#txtZone').value;
+        if(!note){ toast("Describe the hazard first."); return; }
+        runDetection([note], "text", zone, resultArea);
+      };
+    } else if(uploadMode==="photo"){
+      formArea.innerHTML = `
+        <div class="field"><label>Zone / Location</label>${zoneSelectHtml('photoZone')}</div>
+        <div class="field"><label>Photo</label><input type="file" id="photoFile" accept="image/*"></div>
+        <div id="photoPreviewWrap"></div>
+        <button class="btn btn-primary" id="submitPhoto" disabled>Analyze Photo</button>`;
+      const fileInput = formArea.querySelector('#photoFile');
+      const submitBtn = formArea.querySelector('#submitPhoto');
+      fileInput.onchange = ()=>{
+        const f = fileInput.files[0];
+        formArea.querySelector('#photoPreviewWrap').innerHTML='';
+        if(f){
+          const img = document.createElement('img'); img.className='preview';
+          img.src = URL.createObjectURL(f);
+          formArea.querySelector('#photoPreviewWrap').appendChild(img);
+          submitBtn.disabled=false;
+        } else submitBtn.disabled=true;
+      };
+      submitBtn.onclick = ()=>{
+        const zone = formArea.querySelector('#photoZone').value;
+        const f = fileInput.files[0];
+        analyzingState(resultArea, "Analyzing image…", 900, ()=> runDetection([f?f.name:""], "photo", zone, resultArea));
+      };
+    } else if(uploadMode==="video"){
+      formArea.innerHTML = `
+        <div class="field"><label>Zone / Location</label>${zoneSelectHtml('vidZone')}</div>
+        <div class="field"><label>Video clip</label><input type="file" id="vidFile" accept="video/*"></div>
+        <div id="vidPreviewWrap"></div>
+        <button class="btn btn-primary" id="submitVid" disabled>Analyze Video</button>`;
+      const fileInput = formArea.querySelector('#vidFile');
+      const submitBtn = formArea.querySelector('#submitVid');
+      fileInput.onchange = ()=>{
+        const f = fileInput.files[0];
+        formArea.querySelector('#vidPreviewWrap').innerHTML='';
+        if(f){
+          const v = document.createElement('video'); v.className='preview'; v.controls=true;
+          v.src = URL.createObjectURL(f);
+          formArea.querySelector('#vidPreviewWrap').appendChild(v);
+          submitBtn.disabled=false;
+        } else submitBtn.disabled=true;
+      };
+      submitBtn.onclick = ()=>{
+        const zone = formArea.querySelector('#vidZone').value;
+        const f = fileInput.files[0];
+        analyzingFrames(resultArea, ()=> runDetection([f?f.name:""], "video", zone, resultArea, true));
+      };
+    } else if(uploadMode==="audio"){
+      formArea.innerHTML = `
+        <div class="field"><label>Zone / Location</label>${zoneSelectHtml('audZone')}</div>
+        <div class="field"><label>Audio report</label><input type="file" id="audFile" accept="audio/*"></div>
+        <div id="audPreviewWrap"></div>
+        <button class="btn btn-primary" id="submitAud" disabled>Transcribe &amp; Analyze</button>`;
+      const fileInput = formArea.querySelector('#audFile');
+      const submitBtn = formArea.querySelector('#submitAud');
+      fileInput.onchange = ()=>{
+        const f = fileInput.files[0];
+        formArea.querySelector('#audPreviewWrap').innerHTML='';
+        if(f){
+          const a = document.createElement('audio'); a.controls=true; a.style.width='100%'; a.style.marginTop='8px';
+          a.src = URL.createObjectURL(f);
+          formArea.querySelector('#audPreviewWrap').appendChild(a);
+          submitBtn.disabled=false;
+        } else submitBtn.disabled=true;
+      };
+      submitBtn.onclick = ()=>{
+        const zone = formArea.querySelector('#audZone').value;
+        const f = fileInput.files[0];
+        analyzingState(resultArea, "Transcribing audio & analyzing for verbal hazard report…", 1100, ()=> runDetection([f?f.name:""], "audio", zone, resultArea));
+      };
+    } else if(uploadMode==="live"){
+      formArea.innerHTML = `
+        <div class="field"><label>Zone / Location</label>${zoneSelectHtml('liveZone')}</div>
+        <button class="btn btn-outline" id="startCamBtn">📹 Start Camera</button>
+        <div id="liveVidWrap" style="margin-top:10px;"></div>
+        <button class="btn btn-primary" id="captureBtn" style="margin-top:10px;display:none;">📸 Capture Frame &amp; Analyze</button>`;
+      formArea.querySelector('#startCamBtn').onclick = async ()=>{
+        try{
+          mediaStream = await navigator.mediaDevices.getUserMedia({video:true});
+          const v = document.createElement('video'); v.autoplay=true; v.playsInline=true; v.muted=true; v.className='preview';
+          v.srcObject = mediaStream;
+          formArea.querySelector('#liveVidWrap').innerHTML='';
+          formArea.querySelector('#liveVidWrap').appendChild(v);
+          formArea.querySelector('#captureBtn').style.display='inline-block';
+        }catch(e){ toast("Camera permission denied or unavailable."); }
+      };
+      formArea.querySelector('#captureBtn').onclick = ()=>{
+        const zone = formArea.querySelector('#liveZone').value;
+        analyzingState(resultArea, "Capturing frame & analyzing…", 800, ()=> runDetection(["live capture"], "live", zone, resultArea));
+      };
+    }
+  }
+  drawForm();
+  box.appendChild(card);
+  return box;
+}
+function stopMediaStream(){
+  if(mediaStream){ mediaStream.getTracks().forEach(t=>t.stop()); mediaStream=null; }
+}
+function analyzingState(container, msg, ms, cb){
+  container.innerHTML = `<div class="progress-bar"><div style="width:0%"></div></div><p style="font-size:13px;color:var(--text-dim);">${esc(msg)}</p>`;
+  const bar = container.querySelector('.progress-bar > div');
+  requestAnimationFrame(()=> bar.style.width='100%');
+  setTimeout(cb, ms);
+}
+function analyzingFrames(container, cb){
+  container.innerHTML = `<div class="progress-bar"><div style="width:0%"></div></div><p style="font-size:13px;color:var(--text-dim);" id="frameMsg">Analyzing frames…</p>`;
+  const bar = container.querySelector('.progress-bar > div');
+  const msgEl = container.querySelector('#frameMsg');
+  requestAnimationFrame(()=> bar.style.width='100%');
+  const msgs = ["Sampling frames…","Running detection model on sampled frames…","Aggregating hazard candidates…"];
+  let i=0;
+  const iv = setInterval(()=>{ if(i<msgs.length){ msgEl.textContent = msgs[i]; i++; } }, 450);
+  setTimeout(()=>{ clearInterval(iv); cb(); }, 1500);
+}
+
+function runDetection(hints, mode, zone, container, isVideo){
+  const combinedHint = hints.join(" ");
+  let typeIds = detectFromHint(combinedHint);
+  let count = 1;
+  if(isVideo){ count = randInt(1,3); }
+  const results = [];
+  for(let i=0;i<count;i++){
+    const tId = typeIds[i % typeIds.length] || pick(HAZARD_TYPES).id;
+    const clipTs = isVideo ? `00:${String(randInt(3,58)).padStart(2,'0')}` : null;
+    const h = buildHazard(tId, state.currentUser.role, state.currentUser.name, zone, null, false, null, null, clipTs);
+    state.hazards.push(h);
+    results.push(h);
+  }
+  saveState();
+  container.innerHTML = `<p style="font-size:12.5px;color:var(--text-dim);margin-top:10px;">${results.length} hazard(s) detected and added to the queue:</p>`;
+  results.forEach(h=>{
+    const t = TIERS.find(x=>x.id===h.tier);
+    const rc = el('div','result-card '+t.cls);
+    rc.innerHTML = `
+      <div class="flexrow"><span style="font-size:20px;">${h.icon}</span><b>${esc(h.label)}</b><span class="spacer"></span>${tierBadge(h.tier,h.tierNote)}</div>
+      <div class="sep-bar" style="margin-top:8px;"><span>Confidence: <b>${h.confidence}%</b></span>${h.clipTimestamp?`<span>Clip timestamp: <b>${h.clipTimestamp}</b></span>`:''}<span>Zone: <b>${esc(h.zone)}</b></span></div>
+      ${h.tierNote? `<p style="font-size:11.5px;color:var(--text-dim);margin:6px 0 0;">AI note: ${esc(h.tierNote)}</p>`:''}
+      ${h.type==='ppe_violation' ? `<p style="font-size:11px;color:var(--text-dim);margin:6px 0 0;">Audit rule: <code>PERSON_DETECTED + NO_HELMET → PPE_VIOLATION</code></p>` : ''}
+      <p style="font-size:12px;font-weight:800;color:var(--navy);margin:10px 0 2px;">Auto-suggested response</p>
+      <ul class="steps-list">${h.solution.map(s=>`<li>• ${esc(s)}</li>`).join('')}</ul>
+    `;
+    container.appendChild(rc);
+  });
+  toast("Hazard added to the queue. Routed for review.");
+}
+
+/* ============================ ASSOCIATE VIEW ============================ */
+function renderAssociate(){
+  const wrap = el('div');
+  if(state.subview==="upload") wrap.appendChild(renderUploadPanel("associate"));
+  else if(state.subview==="myhazards") wrap.appendChild(renderMyHazards());
+  else if(state.subview==="docs") wrap.appendChild(renderDocPanel(false));
+  else if(state.subview==="actions") wrap.appendChild(renderAssignedActions());
+  else wrap.appendChild(renderUploadPanel("associate"));
+  return wrap;
+}
+function renderMyHazards(){
+  const box = el('div');
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','📋 My Hazard Upload History'));
+  const mine = state.hazards.filter(h=>h.uploader===state.currentUser.name).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+  if(!mine.length){ card.appendChild(el('div','empty','No hazards uploaded yet.')); box.appendChild(card); return box; }
+  const tw = el('div','table-wrap');
+  tw.innerHTML = `<table><thead><tr><th>Tier</th><th>Type</th><th>Location</th><th>Status</th><th>Reported</th><th></th></tr></thead><tbody>
+    ${mine.map(h=>`<tr><td>${tierBadge(h.tier,h.tierNote)}</td><td>${h.icon} ${esc(h.label)}</td><td>${esc(h.zone)}</td><td>${statusBadge(h.status)}</td><td>${fmtTime(h.ts)}</td><td><button class="btn btn-ghost btn-sm" onclick="openHazardDetail('${h.id}')">View →</button></td></tr>`).join('')}
+  </tbody></table>`;
+  card.appendChild(tw);
+  box.appendChild(card);
+  return box;
+}
+function renderAssignedActions(){
+  const box = el('div');
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','✅ Assigned Response Actions'));
+  const mine = state.hazards.filter(h=>h.uploader===state.currentUser.name && h.status!=="Resolved").sort((a,b)=>TIER_ORDER[a.tier]-TIER_ORDER[b.tier]);
+  if(!mine.length){ card.appendChild(el('div','empty','No open actions assigned to you.')); box.appendChild(card); return box; }
+  const tw = el('div','table-wrap');
+  tw.innerHTML = `<table><thead><tr><th>Tier</th><th>Type</th><th>Location</th><th>Status</th><th>Assigned Solution</th><th></th></tr></thead><tbody>
+    ${mine.map(h=>`<tr>
+      <td>${tierBadge(h.tier,h.tierNote)}</td>
+      <td>${h.icon} ${esc(h.label)}</td>
+      <td>${esc(h.zone)}</td>
+      <td>${statusBadge(h.status)}</td>
+      <td>${h.assignedSolution ? esc(h.assignedSolution) : '<span style="color:var(--text-dim);">— awaiting admin —</span>'}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openHazardDetail('${h.id}')">${h.status==='Assigned' ? 'Respond →' : 'View →'}</button></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+  card.appendChild(tw);
+  box.appendChild(card);
+  return box;
+}
+
+/* ============================ MEMBER VIEW ============================ */
+function renderMember(){
+  const wrap = el('div');
+  if(state.subview==="report") wrap.appendChild(renderMemberReport());
+  else wrap.appendChild(renderMemberStatus());
+  return wrap;
+}
+function renderMemberReport(){
+  const box = el('div');
+  const card = el('div','card pad');
+  card.appendChild(el('div','section-title','🚨 Report a Hazard'));
+  card.innerHTML += `
+    <div class="field"><label>Zone / Location</label><select id="mZone">${ZONES.map(z=>`<option>${z}</option>`).join('')}</select></div>
+    <div class="upload-tabs" id="mTabs">
+      <button class="upload-tab active" data-m="text">📝 Text</button>
+      <button class="upload-tab" data-m="photo">🖼️ Photo</button>
+    </div>
+    <div id="mFormArea"></div>
+    <div id="mResult"></div>`;
+  let mMode = "text";
+  const formArea = card.querySelector('#mFormArea');
+  const resultArea = card.querySelector('#mResult');
+  function draw(){
+    [...card.querySelectorAll('.upload-tab')].forEach(b=>b.classList.toggle('active', b.dataset.m===mMode));
+    resultArea.innerHTML='';
+    if(mMode==="text"){
+      formArea.innerHTML = `<div class="field"><label>What did you see?</label><textarea id="mNote" rows="3" placeholder="e.g. worker without helmet near platform..."></textarea></div>
+        <button class="btn btn-primary" id="mSubmit">Submit Report</button>`;
+      formArea.querySelector('#mSubmit').onclick = ()=>{
+        const note = formArea.querySelector('#mNote').value.trim();
+        if(!note){ toast("Please describe what you saw."); return; }
+        const zone = card.querySelector('#mZone').value;
+        analyzingState(resultArea, "Analyzing report…", 700, ()=> runDetection([note], "text", zone, resultArea));
+      };
+    } else {
+      formArea.innerHTML = `<div class="field"><label>Photo</label><input type="file" id="mPhoto" accept="image/*"></div>
+        <div id="mPreview"></div>
+        <button class="btn btn-primary" id="mSubmitPhoto" disabled>Submit Photo</button>`;
+      const fi = formArea.querySelector('#mPhoto');
+      const btn = formArea.querySelector('#mSubmitPhoto');
+      fi.onchange = ()=>{
+        formArea.querySelector('#mPreview').innerHTML='';
+        if(fi.files[0]){
+          const img = document.createElement('img'); img.className='preview'; img.src=URL.createObjectURL(fi.files[0]);
+          formArea.querySelector('#mPreview').appendChild(img); btn.disabled=false;
+        } else btn.disabled=true;
+      };
+      btn.onclick = ()=>{
+        const zone = card.querySelector('#mZone').value;
+        analyzingState(resultArea, "Analyzing image…", 900, ()=> runDetection([fi.files[0]?fi.files[0].name:""], "photo", zone, resultArea));
+      };
+    }
+  }
+  card.querySelectorAll('.upload-tab').forEach(b=> b.onclick = ()=>{ mMode=b.dataset.m; draw(); });
+  draw();
+  box.appendChild(card);
+  return box;
+}
+function renderMemberStatus(){
+  const box = el('div');
+  box.appendChild(bannerEl());
+  const note = el('div','card pad'); note.style.marginTop='16px';
+  note.innerHTML = `<p style="font-size:13.5px;margin:0;">You'll see the overall site alert status here. For hazard details and response tracking, contact your Site Officer.</p>`;
+  box.appendChild(note);
+  return box;
+}
+
+/* ============================== INIT ============================== */
+state = loadState();
+render();
+</script>
+</body>
+</html>
